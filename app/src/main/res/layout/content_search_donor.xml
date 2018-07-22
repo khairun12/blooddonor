@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/donarlayout"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.peoplentech.devkh.blooddonor.SearchDonorActivity"
+    tools:showIn="@layout/app_bar_search_donor">
+
+    <Spinner
+        android:id="@+id/donorSpinner"
+        style="?android:attr/spinnerDropDownItemStyle"
+        android:layout_width="match_parent"
+        android:dropDownVerticalOffset="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="25dp"
+        android:layout_marginStart="25dp"
+        android:background="@drawable/custom_spinner_background"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin" />
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/donorRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">-->
+
+      <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerviewDonor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="cardTransition"/>
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+</LinearLayout>

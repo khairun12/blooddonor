@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/reglogo" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="Full Name"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_name"
+                android:drawablePadding="10dp"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:hint="Date of Birth"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_date"
+                android:drawablePadding="10dp"
+                android:focusable="false" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Area"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_address"
+                android:drawablePadding="10dp"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:hint="Phone Number"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawablePadding="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginEnd="5dp"
+                android:padding="5dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blood Group: "
+                    android:textColor="#a31805"
+                    android:textSize="18sp"/>
+
+                <Spinner
+                    android:id="@+id/bloodSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:spinnerMode="dropdown" />
+
+
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/radioGender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender: "
+                    android:textColor="#a31805"
+                    android:textSize="18sp"/>
+
+                <RadioButton
+                    android:id="@+id/radioMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Male"
+                    android:checked="true"
+                    android:buttonTint="#a31805"
+                    android:textColor="#a31805"
+                    android:textSize="18sp"
+                    android:padding="5dp"/>
+
+                <RadioButton
+                    android:id="@+id/radioFemale"
+                    android:text="Female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#a31805"
+                    android:textSize="18sp"
+                    android:padding="5dp"
+                    android:buttonTint="#a31805" />
+
+            </RadioGroup>
+
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userRegEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Email"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_email_custom"
+                android:drawablePadding="10dp"/>
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/userRegPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="Password"
+                android:textColor="#a31805"
+                app:backgroundTint="#a31805"
+                android:textColorHint="#92a31805"
+                android:textCursorDrawable="@null"
+                android:drawableStart="@drawable/ic_pass_custom"
+                android:drawablePadding="10dp"/>
+
+            <RadioGroup
+                android:id="@+id/radioInterest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do you want to Donate Blood? "
+                    android:textColor="#a31805"
+                    android:textSize="18sp"/>
+
+
+
+                <RadioButton
+                    android:id="@+id/radioYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes"
+                    android:checked="true"
+                    android:buttonTint="#a31805"
+                    android:textColor="#a31805"
+                    android:textSize="18sp"
+                    android:padding="5dp"/>
+
+                <RadioButton
+                    android:id="@+id/radioNo"
+                    android:text="No"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#a31805"
+                    android:textSize="18sp"
+                    android:padding="5dp"
+                    android:buttonTint="#a31805" />
+
+            </RadioGroup>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:textColor="#fff"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:background="#a31805"
+                android:id="@+id/register"
+                android:layout_marginBottom="15dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    </LinearLayout>
+
+
+

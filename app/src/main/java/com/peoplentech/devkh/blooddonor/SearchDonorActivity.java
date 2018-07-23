@@ -92,12 +92,7 @@ public class SearchDonorActivity extends AppCompatActivity
         recyclerViewUsers.setHasFixedSize(true);
         recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiUtils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        final UserService service = retrofit.create(UserService.class);
 
        //Spinner Code
         Spinner spinnerCustom= (Spinner) findViewById(R.id.donorSpinner);
@@ -116,6 +111,14 @@ public class SearchDonorActivity extends AppCompatActivity
         CustomSpinnerAdapter customSpinnerAdapter= new CustomSpinnerAdapter(this, areas);
         spinnerCustom.setAdapter(customSpinnerAdapter);
         spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiUtils.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            UserService service = retrofit.create(UserService.class);
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -244,86 +247,6 @@ public class SearchDonorActivity extends AppCompatActivity
             loadData();
         }
     }*/
-
-    private void loadData() {
-        //recyclerview code
-        recyclerViewUsers = (RecyclerView) findViewById(R.id.recyclerviewDonor);
-        recyclerViewUsers.setHasFixedSize(true);
-        recyclerViewUsers.setLayoutManager(new LinearLayoutManager(SearchDonorActivity.this));
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiUtils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final UserService service = retrofit.create(UserService.class);
-
-        //Spinner Code
-        Spinner spinnerCustom= (Spinner) findViewById(R.id.donorSpinner);
-        // Spinner Drop down elements
-        ArrayList<String> areas = new ArrayList<String>();
-        areas.add("Select Blood Group");
-        areas.add("A+");
-        areas.add("A-");
-        areas.add("AB+");
-        areas.add("AB-");
-        areas.add("B+");
-        areas.add("B-");
-        areas.add("O+");
-        areas.add("O-");
-
-        CustomSpinnerAdapter customSpinnerAdapter= new CustomSpinnerAdapter(this, areas);
-        spinnerCustom.setAdapter(customSpinnerAdapter);
-        spinnerCustom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position == 0){
-                    Call<Users> call = service.getUsers();
-
-                    call.enqueue(new Callback<Users>() {
-
-                        @Override
-                        public void onResponse(Call<Users> call, retrofit2.Response<Users> response) {
-                            adapter = new BloodDonorAdapter(response.body().getUsers(), getApplicationContext());
-                            recyclerViewUsers.setAdapter(adapter);
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<Users> call, Throwable t) {
-
-                        }
-                    });
-                } else {
-                    String item = parent.getItemAtPosition(position).toString();
-                    //Post
-                    Call<ResObj> call = service.getDonor(item);
-
-                    call.enqueue(new Callback<ResObj>() {
-
-                        @Override
-                        public void onResponse(Call<ResObj> call, retrofit2.Response<ResObj> response) {
-                            adapter = new BloodDonorAdapter(response.body().getUsers(), getApplicationContext());
-                            recyclerViewUsers.setAdapter(adapter);
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResObj> call, Throwable t) {
-
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
 
 
     //Adapter for our custom spinner

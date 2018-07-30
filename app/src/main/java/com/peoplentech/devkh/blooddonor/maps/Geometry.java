@@ -9,26 +9,75 @@ import com.google.gson.annotations.SerializedName;
 
 public class Geometry {
 
-    @SerializedName("location")
+   /*@SerializedName("location")
     @Expose
-    private Location location;
+    private Location location;*/
 
     /**
      *
      * @return
      * The location
      */
-    public Location getLocation() {
+    /*public Location getLocation() {
         return location;
-    }
+    }*/
 
     /**
      *
      * @param location
      * The location
      */
-    public void setLocation(Location location) {
+  /*  public void setLocation(Location location) {
         this.location = location;
     }
+
+}*/
+/**
+ * new code
+ */
+
+@SerializedName("location")
+
+@Expose
+
+private Location location;
+
+
+
+    /**
+
+     *
+
+     * @return
+
+     * The location
+
+     */
+
+    public Location getLocation() {
+
+        return location;
+
+    }
+
+
+
+    /**
+
+     *
+
+     * @param location
+
+     * The location
+
+     */
+
+    public void setLocation(Location location) {
+
+        this.location = location;
+
+    }
+
+
 
 }

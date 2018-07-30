@@ -1,6 +1,7 @@
 package com.peoplentech.devkh.blooddonor;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -27,6 +28,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.peoplentech.devkh.blooddonor.maps.Example;
 import com.peoplentech.devkh.blooddonor.remote.RetrofitMaps;
 
@@ -161,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         call.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
+
                 try {
                     mMap.clear();
                     // This loop will go through all the results and add marker on each location.
@@ -187,13 +191,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("onResponse", "There is an error");
                     e.printStackTrace();
                 }
+
             }
 
             @Override
             public void onFailure(Call<Example> call, Throwable t) {
                 Log.d("onFailure", t.toString());
+                PROXIMITY_RADIUS += 10000;
             }
-
         });
 
     }
@@ -207,6 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleApiClient.connect();
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -216,7 +222,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,  this);
         }
     }
 

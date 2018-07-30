@@ -1,10 +1,16 @@
 package com.peoplentech.devkh.blooddonor;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.TransitionManager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -12,7 +18,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "mykeytool";
     //Button find_donar, find_bank, login, register;
 
     private Animation slideAnimationLeft;
@@ -90,10 +100,11 @@ public class MainActivity extends AppCompatActivity {
         find_bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchNearbyPlaces.class);
                 startActivity(intent);
             }
         });
+
 
     }
 }

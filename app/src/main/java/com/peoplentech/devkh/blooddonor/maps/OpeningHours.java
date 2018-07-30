@@ -12,47 +12,138 @@ import java.util.List;
 
 public class OpeningHours {
 
-    @SerializedName("open_now")
+   /* @SerializedName("open_now")
     @Expose
     private Boolean openNow;
     @SerializedName("weekday_text")
     @Expose
-    private List<Object> weekdayText = new ArrayList<Object>();
+    private List<Object> weekdayText = new ArrayList<Object>();*/
 
     /**
      *
      * @return
      * The openNow
      */
-    public Boolean getOpenNow() {
+    /*public Boolean getOpenNow() {
         return openNow;
-    }
+    }*/
 
     /**
      *
      * @param openNow
      * The open_now
      */
-    public void setOpenNow(Boolean openNow) {
+    /*public void setOpenNow(Boolean openNow) {
         this.openNow = openNow;
-    }
+    }*/
 
     /**
      *
      * @return
      * The weekdayText
      */
-    public List<Object> getWeekdayText() {
+    /*public List<Object> getWeekdayText() {
         return weekdayText;
-    }
+    }*/
 
     /**
      *
      * @param weekdayText
      * The weekday_text
      */
-    public void setWeekdayText(List<Object> weekdayText) {
+   /* public void setWeekdayText(List<Object> weekdayText) {
         this.weekdayText = weekdayText;
     }
+
+}*/
+/**
+ * new code
+ */
+
+@SerializedName("open_now")
+
+@Expose
+
+private Boolean openNow;
+
+    @SerializedName("weekday_text")
+
+    @Expose
+
+    private List<Object> weekdayText = new ArrayList<Object>();
+
+
+
+    /**
+
+     *
+
+     * @return
+
+     * The openNow
+
+     */
+
+    public Boolean getOpenNow() {
+
+        return openNow;
+
+    }
+
+
+
+    /**
+
+     *
+
+     * @param openNow
+
+     * The open_now
+
+     */
+
+    public void setOpenNow(Boolean openNow) {
+
+        this.openNow = openNow;
+
+    }
+
+
+
+    /**
+
+     *
+
+     * @return
+
+     * The weekdayText
+
+     */
+
+    public List<Object> getWeekdayText() {
+
+        return weekdayText;
+
+    }
+
+
+
+    /**
+
+     *
+
+     * @param weekdayText
+
+     * The weekday_text
+
+     */
+
+    public void setWeekdayText(List<Object> weekdayText) {
+
+        this.weekdayText = weekdayText;
+
+    }
+
+
 
 }

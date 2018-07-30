@@ -8,4 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="transition">Transition</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="facebook_app_id">283403615749181</string>
+    <string name="fb_login_protocol_scheme">fb283403615749181</string>
 </resources>

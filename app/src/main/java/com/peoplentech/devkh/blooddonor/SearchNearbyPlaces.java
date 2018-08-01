@@ -3,16 +3,20 @@ package com.peoplentech.devkh.blooddonor;
 import android.Manifest;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
 import android.location.Location;
 
+import android.location.LocationManager;
 import android.os.Build;
 
 import android.support.annotation.NonNull;
 
 import android.support.annotation.Nullable;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 
 import android.support.v4.content.ContextCompat;
@@ -30,7 +34,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.common.ConnectionResult;
 
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -55,11 +64,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.peoplentech.devkh.blooddonor.maps.NearByApiResponse;
 import com.peoplentech.devkh.blooddonor.model.MyApplication;
+import com.peoplentech.devkh.blooddonor.remote.Constants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 
@@ -67,7 +82,9 @@ import retrofit2.Callback;
 
 import retrofit2.Response;
 
-public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,LocationListener {
+public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
 
 
@@ -83,7 +100,14 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
     private int PROXIMITY_RADIUS = 5000;
 
+    private LatLng destination;
 
+    private LatLng pnt;
+
+    private String[] colors = {"#7fff7272", "#7f31c7c5", "#7fff8a00"};
+
+    private double pntLat;
+    private double pntLng;
 
 
 
@@ -163,7 +187,7 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
     @Override
 
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
 
         this.googleMap = googleMap;
 
@@ -181,6 +205,7 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
                 googleMap.setMyLocationEnabled(true);
 
+
             }
 
         } else {
@@ -191,6 +216,67 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
         }
 
+        //new
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            public void onInfoWindowClick(final Marker marker) {
+                // Do stuff with the id
+                //Toast.makeText(SearchNearbyPlaces.this, "Direction Requesting..." + marker.getPosition(), Toast.LENGTH_SHORT).show();
+
+                pnt = new LatLng(pntLat, pntLng);
+
+                GoogleDirection.withServerKey(Constants.MAPS_API_KEY)
+
+                        .from(pnt)
+
+                        .to(marker.getPosition())
+
+                        .transportMode(TransportMode.DRIVING)
+
+                        .alternativeRoute(true)
+
+                        .execute(new DirectionCallback() {
+                            @Override
+                            public void onDirectionSuccess(Direction direction, String rawBody) {
+
+                                if (direction.isOK()) {
+
+                                    googleMap.clear();
+
+                                    googleMap.addMarker(new MarkerOptions().position(pnt));
+
+                                    googleMap.addMarker(new MarkerOptions().position(marker.getPosition()));
+
+
+
+                                    for (int i = 0; i < direction.getRouteList().size(); i++) {
+
+                                        Route route = direction.getRouteList().get(i);
+
+                                        String color = colors[i % colors.length];
+
+                                        ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
+
+                                        googleMap.addPolyline(DirectionConverter.createPolyline(SearchNearbyPlaces.this, directionPositionList, 5, Color.parseColor(color)));
+
+                                    }
+
+                                    setCameraWithCoordinationBounds(direction.getRouteList().get(0));
+
+
+                                } else {
+                                    Toast.makeText(SearchNearbyPlaces.this, "Error", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+
+                            @Override
+                            public void onDirectionFailure(Throwable t) {
+                                Toast.makeText(SearchNearbyPlaces.this, "Error " + t.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+        });
+
     }
 
 
@@ -199,7 +285,9 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
     protected synchronized void buildGoogleApiClient() {
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).
+                addConnectionCallbacks(this).addOnConnectionFailedListener(this).
+                addApi(LocationServices.API).build();
 
         mGoogleApiClient.connect();
 
@@ -271,6 +359,8 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
                         Marker m = googleMap.addMarker(markerOptions);
 
+                        //destination = m.getPosition();
+
                         // move map camera
 
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -308,87 +398,83 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
     }
 
     //Method for Blood Bank
-    public void findBloodBank(){
+    public void findBloodBank() {
 
-        Call<NearByApiResponse> call = MyApplication.getApp().getApiService().getBloodBank( location.getLatitude() + "," + location.getLongitude(), PROXIMITY_RADIUS);
+            Call<NearByApiResponse> call = MyApplication.getApp().getApiService().getBloodBank( location.getLatitude() + "," + location.getLongitude(), PROXIMITY_RADIUS);
 
 
 
-        call.enqueue(new Callback<NearByApiResponse>() {
+            call.enqueue(new Callback<NearByApiResponse>() {
 
-            @Override
+                @Override
 
-            public void onResponse(Call<NearByApiResponse> call, Response<NearByApiResponse> response) {
+                public void onResponse(Call<NearByApiResponse> call, Response<NearByApiResponse> response) {
 
-                try {
+                    try {
 
-                    googleMap.clear();
+                        googleMap.clear();
 
-                    // This loop will go through all the results and add marker on each location.
+                        // This loop will go through all the results and add marker on each location.
 
-                    for (int i = 0; i < response.body().getResults().size(); i++) {
+                        for (int i = 0; i < response.body().getResults().size(); i++) {
 
-                        Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
+                            Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
 
-                        Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
+                            Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
 
-                        String placeName = response.body().getResults().get(i).getName();
+                            String placeName = response.body().getResults().get(i).getName();
 
-                        String vicinity = response.body().getResults().get(i).getVicinity();
+                            String vicinity = response.body().getResults().get(i).getVicinity();
 
-                        MarkerOptions markerOptions = new MarkerOptions();
+                            final MarkerOptions markerOptions = new MarkerOptions();
 
-                        LatLng latLng = new LatLng(lat, lng);
+                            LatLng latLng = new LatLng(lat, lng);
 
-                        // Location of Marker on Map
+                            // Location of Marker on Map
 
-                        markerOptions.position(latLng);
+                            markerOptions.position(latLng);
 
-                        // Title for Marker
+                            // Title for Marker
 
-                        markerOptions.title(placeName + " : " + vicinity);
+                            markerOptions.title(placeName + " : " + vicinity);
 
-                        // Color or drawable for marker
+                            // Color or drawable for marker
 
-                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
-                        // add marker
+                            // add marker
 
-                        Marker m = googleMap.addMarker(markerOptions);
+                            Marker m = googleMap.addMarker(markerOptions);
 
-                        // move map camera
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                        }
 
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+                    } catch (Exception e) {
+
+                        Log.d("onResponse", "There is an error");
+
+                        e.printStackTrace();
 
                     }
 
-                } catch (Exception e) {
+                }
 
-                    Log.d("onResponse", "There is an error");
 
-                    e.printStackTrace();
+                @Override
+
+                public void onFailure(Call<NearByApiResponse> call, Throwable t) {
+
+                    Log.d("onFailure", t.toString());
+
+                    t.printStackTrace();
+
+                    PROXIMITY_RADIUS += 10000;
 
                 }
 
-            }
-
-
-
-            @Override
-
-            public void onFailure(Call<NearByApiResponse> call, Throwable t) {
-
-                Log.d("onFailure", t.toString());
-
-                t.printStackTrace();
-
-                PROXIMITY_RADIUS += 10000;
-
-            }
-
-        });
+            });
 
     }
 
@@ -414,7 +500,6 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
                 // this thread waiting for the user's response! After the user
 
                 // sees the explanation, try again to request the permission.
-
 
 
                 //Prompt the user once explanation has been shown
@@ -556,6 +641,9 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
             this.location = location;
 
+            pntLat = location.getLatitude();
+            pntLng = location.getLongitude();
+
             if(!btnHospitalFind.isEnabled()){
 
                 LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
@@ -563,8 +651,6 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-
 
                 btnRestorentFind.setEnabled(true);
 
@@ -576,4 +662,15 @@ public class SearchNearbyPlaces extends AppCompatActivity implements OnMapReadyC
 
     }
 
+    private void setCameraWithCoordinationBounds(Route route) {
+
+        LatLng southwest = route.getBound().getSouthwestCoordination().getCoordination();
+
+        LatLng northeast = route.getBound().getNortheastCoordination().getCoordination();
+
+        LatLngBounds bounds = new LatLngBounds(southwest, northeast);
+
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+
+    }
 }
